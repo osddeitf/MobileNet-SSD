@@ -700,7 +700,7 @@ layer {
       self.label_map = FLAGS.label_map
       self.stage = stage
       if gen_ssd:
-          self.input_size = 300
+          self.input_size = 150
       else:
           self.input_size = 224
       self.size = size
@@ -748,10 +748,10 @@ layer {
           self.mbox("conv11", 3)
           self.mbox("conv13", 6)
           self.mbox("conv14_2", 6)
-          self.mbox("conv15_2", 6)
-          self.mbox("conv16_2", 6)
-          self.mbox("conv17_2", 6)
-          self.concat_boxes(['conv11', 'conv13', 'conv14_2', 'conv15_2', 'conv16_2', 'conv17_2'])
+#          self.mbox("conv15_2", 6)
+#          self.mbox("conv16_2", 6)
+#          self.mbox("conv17_2", 6)
+          self.concat_boxes(['conv11', 'conv13', 'conv14_2']) #, 'conv15_2', 'conv16_2', 'conv17_2'])
           if stage == "train":
              self.ssd_loss()
           elif stage == "deploy":
@@ -764,14 +764,14 @@ layer {
           if stage == "train":
              self.classifier_loss()
 
-   
-def create_ssd_anchors(num_layers=6,
+def create_ssd_anchors(num_layers=3,
+#def create_ssd_anchors(num_layers=6,
                        min_scale=0.2,
                        max_scale=0.95):
   box_specs_list = []
   scales = [min_scale + (max_scale - min_scale) * i / (num_layers - 1)
             for i in range(num_layers)] + [1.0]
-  return zip(scales[:-1], scales[1:])
+  return list(zip(scales[:-1], scales[1:]))
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()

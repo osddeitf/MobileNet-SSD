@@ -1,13 +1,19 @@
 import numpy as np  
 import sys,os  
 import cv2
-caffe_root = '/home/yaochuanqi/work/ssd/caffe/'
-sys.path.insert(0, caffe_root + 'python')  
 import caffe  
+import argparse
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--model', required=True, help='.prototxt')
+parser.add_argument('--weights', required=True, help='.caffemodel')
+parser.add_argument('--width', required=True, type=int, help='width')
+parser.add_argument('--height', required=True, type=int, help='height')
+_options = parser.parse_args()
 
-net_file= 'deploy.prototxt'  
-caffe_model='mobilenet_iter_73000.caffemodel'  
+net_file = _options.model
+caffe_model = _options.weights
+
 test_dir = "images"
 
 if not os.path.exists(caffe_model):
@@ -27,7 +33,7 @@ CLASSES = ('background',
 
 
 def preprocess(src):
-    img = cv2.resize(src, (300,300))
+    img = cv2.resize(src, (_options.width, _options.height))
     img = img - 127.5
     img = img * 0.007843
     return img
